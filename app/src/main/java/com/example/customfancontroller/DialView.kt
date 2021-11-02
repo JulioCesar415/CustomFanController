@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.withStyledAttributes
 import java.lang.Double.min
 import kotlin.math.cos
 import kotlin.math.min
@@ -53,9 +54,21 @@ class DialView @JvmOverloads constructor(
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+//    declare variables to cache attribute values
+    private var fanSpeedLowColor = 0
+    private var fanSpeedMediumColor = 0
+    private var fanSpeedMaxColor = 0
+
 //    add init block. setting view's isClickable true enables that view to accept user input
     init {
         isClickable = true
+
+//        supply attributes and view, and set your local variables
+        context.withStyledAttributes(attrs, R.styleable.DialView) {
+            fanSpeedLowColor = getColor(R.styleable.DialView_fanColor1, 0)
+            fanSpeedMediumColor = getColor(R.styleable.DialView_fanColor2, 0)
+            fanSpeedMaxColor = getColor(R.styleable.DialView_fanColor3, 0)
+        }
     }
 
     override fun performClick(): Boolean {
@@ -111,6 +124,14 @@ class DialView @JvmOverloads constructor(
             val label = resources.getString(i.label)
             canvas?.drawText(label, pointPosition.x, pointPosition.y, paint)
         }
+
+//        set the dial color based on the current fan speed
+        paint.color = when (fanSpeed) {
+            FanSpeed.OFF -> Color.GRAY
+            FanSpeed.LOW -> fanSpeedLowColor
+            FanSpeed.MEDIUM -> fanSpeedMediumColor
+            FanSpeed.HIGH -> fanSpeedMaxColor
+        } as Int
     }
 
 }
