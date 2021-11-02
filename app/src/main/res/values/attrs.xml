@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <declare-styleable name="DialView">
+<!--        attributes for 3 fan colors -->
+        <attr name="fanColor1" format="color"/>
+        <attr name="fanColor2" format="color"/>
+        <attr name="fanColor3" format="color"/>
+    </declare-styleable>
+</resources>
