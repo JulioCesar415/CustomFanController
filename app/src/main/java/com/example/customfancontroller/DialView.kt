@@ -16,6 +16,14 @@ private enum class FanSpeed(val label: Int) {
     LOW(R.string.fan_low),
     MEDIUM(R.string.fan_medium),
     HIGH(R.string.fan_high);
+
+//    extension function that changes the current fan speed to the next speed in the list
+    fun next() = when (this) {
+        OFF -> LOW
+        LOW -> MEDIUM
+        MEDIUM -> HIGH
+        HIGH -> OFF
+    }
 }
 
 //constants used as part of drawing the dial indicator and labels
@@ -43,6 +51,27 @@ class DialView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         textSize = 55.0f
         typeface = Typeface.create("", Typeface.BOLD)
+    }
+
+//    add init block. setting view's isClickable true enables that view to accept user input
+    init {
+        isClickable = true
+    }
+
+    override fun performClick(): Boolean {
+//        super.performClick() must happen first, which enables accessibility events as
+//        well as calls onClickListener()
+        if (super.performClick()) return true
+//        increment speed of fan with next()
+        fanSpeed = fanSpeed.next()
+//        set the view's content description to th estring resource representing
+//        the current speed (off, 1, 2, 3)
+        contentDescription = resources.getString(fanSpeed.label)
+//        invalidate entire view, forcing call to onDraw() to redraw view. If something
+//        in custom view changes for any reason, including user interaction, and change
+//        needs to be displayed, call invalidate()
+        invalidate()
+        return true
     }
 
 //    draw fan controller custom view onto screen
